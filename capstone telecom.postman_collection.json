@@ -1,414 +1,574 @@
 {
-  "info": {
-    "_postman_id": "040077f5-4971-40d5-aa0a-e7fe4a81edf1",
-    "name": "capstone telecom",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "38519431"
-  },
-  "item": [
-    {
-      "name": "01 Add User",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "const uniqueEmail = `test${Date.now()}@fake.com`;\r\n\r\npm.environment.set(\"email\", uniqueEmail);\r\n\r\nconsole.log(\"EMAIL SAVED IN ENVIRONMENT:\", pm.environment.get(\"email\"));"
-            ]
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.environment.set(\"token\", response.token);\r\n\r\npm.test(\"Token is generated\", function () {\r\n    pm.expect(response.token).to.not.be.empty;\r\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "https://thinking-tester-contact-list.herokuapp.com/users",
-          "protocol": "https",
-          "host": [
-            "thinking-tester-contact-list",
-            "herokuapp",
-            "com"
-          ],
-          "path": [
-            "users"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "02 Get User Profile",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/users/me",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "users",
-            "me"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "03 Update User",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Email is updated\", function () {\r\n    pm.expect(response.email).to.eql(\r\n        pm.environment.get(\"updatedEmail\")\r\n    );\r\n});"
-            ]
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "const updatedEmail = `updated${Date.now()}@fake.com`;\r\n\r\npm.environment.set(\"updatedEmail\", updatedEmail);\r\n\r\nconsole.log(\"UPDATED EMAIL:\", updatedEmail);"
-            ]
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "const updatedEmail = `updated${Date.now()}@fake.com`;\r\n\r\npm.environment.set(\"updatedEmail\", updatedEmail);\r\n\r\nconsole.log(\"UPDATED EMAIL:\", updatedEmail);"
-            ]
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "const updatedEmail = `updated${Date.now()}@fake.com`;\r\n\r\npm.environment.set(\"updatedEmail\", updatedEmail);\r\n\r\nconsole.log(\"UPDATED EMAIL:\", updatedEmail);"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PATCH",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "\r\n{\r\n    \"firstName\": \"Updated\",\r\n    \"lastName\": \"Username\",\r\n    \"email\": \"{{updatedEmail}}\",\r\n    \"password\": \"{{updatedPassword}}\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/users/me",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "users",
-            "me"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "04 Login User",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Token is generated\", function () {\r\n    pm.expect(response.token).to.not.be.empty;\r\n});\r\n\r\npm.environment.set(\"token\", response.token);"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": " { \r\n \"email\": \"{{newEmail}}\",\r\n \"password\": \"{{newPassword}}\"\r\n }",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/users/login",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "users",
-            "login"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "05 Add Contact",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.environment.set(\"contactId\", response._id);"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"birthdate\": \"1970-01-01\",\r\n    \"email\": \"john.doe@fake.com\",\r\n    \"phone\": \"8005555555\",\r\n    \"street1\": \"1 Main St.\",\r\n    \"street2\": \"Apartment A\",\r\n    \"city\": \"Anytown\",\r\n    \"stateProvince\": \"KS\",\r\n    \"postalCode\": \"12345\",\r\n    \"country\": \"USA\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/contacts",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "contacts"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "06 Get Contact List",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Contact list is not empty\", function () {\r\n    pm.expect(response.length).to.be.greaterThan(0);\r\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/contacts",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "contacts"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "07 Get Contact",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": ""
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "8 Update Contact",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Email is updated\", function () {\r\n    pm.expect(response.email).to.eql(\"amiller@fake.com\");\r\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"firstName\": \"Amy\",\r\n    \"lastName\": \"Miller\",\r\n    \"birthdate\": \"1992-02-02\",\r\n    \"email\": \"amiller@fake.com\",\r\n    \"phone\": \"8005554242\",\r\n    \"street1\": \"13 School St.\",\r\n    \"street2\": \"Apt. 5\",\r\n    \"city\": \"Washington\",\r\n    \"stateProvince\": \"QC\",\r\n    \"postalCode\": \"A1A1A1\",\r\n    \"country\": \"Canada\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/contacts/{{contactId}}",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "contacts",
-            "{{contactId}}"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "9 Update Partical Contact",
-      "request": {
-        "method": "PATCH",
-        "header": [],
-        "url": {
-          "raw": ""
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "10 Logout",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/users/logout",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "users",
-            "logout"
-          ]
-        }
-      },
-      "response": []
-    }
-  ]
+    "info":  {
+                 "_postman_id":  "040077f5-4971-40d5-aa0a-e7fe4a81edf1",
+                 "name":  "capstone telecom",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+                 "_exporter_id":  "38519431"
+             },
+    "item":  [
+                 {
+                     "name":  "01 Add User",
+                     "event":  [
+                                   {
+                                       "listen":  "prerequest",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "const uniqueEmail = `test${Date.now()}@fake.com`;\r",
+                                                                   "\r",
+                                                                   "pm.environment.set(\"email\", uniqueEmail);\r",
+                                                                   "pm.environment.set(\"password\", \"myPassword123\");\r",
+                                                                   "console.log(\"EMAIL:\", pm.environment.get(\"email\"));\r",
+                                                                   "console.log(\"PASSWORD:\", pm.environment.get(\"password\"));\r",
+                                                                   "\r",
+                                                                   ""
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   },
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 201\", function () {\r",
+                                                                   "    pm.response.to.have.status(201);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "const response = pm.response.json();\r",
+                                                                   "\r",
+                                                                   "pm.environment.set(\"token\", response.token);\r",
+                                                                   "\r",
+                                                                   "pm.test(\"Token is generated\", function () {\r",
+                                                                   "    pm.expect(response.token).to.not.be.empty;\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "console.log(\"TOKEN SAVED:\", pm.environment.get(\"token\"));"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "https://thinking-tester-contact-list.herokuapp.com/users",
+                                                 "protocol":  "https",
+                                                 "host":  [
+                                                              "thinking-tester-contact-list",
+                                                              "herokuapp",
+                                                              "com"
+                                                          ],
+                                                 "path":  [
+                                                              "users"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "02 Get User Profile",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "type":  "text/javascript",
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+                                                               ]
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "GET",
+                                     "header":  [
+
+                                                ],
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/users/me",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "users",
+                                                              "me"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "03 Update User",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r",
+                                                                   "    pm.response.to.have.status(200);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "const response = pm.response.json();\r",
+                                                                   "\r",
+                                                                   "pm.test(\"Email is updated\", function () {\r",
+                                                                   "    pm.expect(response.email).to.eql(\r",
+                                                                   "        pm.environment.get(\"updatedEmail\")\r",
+                                                                   "    );\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   },
+                                   {
+                                       "listen":  "prerequest",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "const updatedEmail = `updated${Date.now()}@fake.com`;\r",
+                                                                   "\r",
+                                                                   "pm.environment.set(\"updatedEmail\", updatedEmail);\r",
+                                                                   ""
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "PATCH",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n    \"firstName\": \"Updated\",\r\n    \"lastName\": \"Username\",\r\n    \"email\": \"{{updatedEmail}}\",\r\n    \"password\": \"{{updatedPassword}}\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/users/me",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "users",
+                                                              "me"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "04 Login User",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r",
+                                                                   "    pm.response.to.have.status(200);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "const response = pm.response.json();\r",
+                                                                   "\r",
+                                                                   "pm.test(\"Token is generated\", function () {\r",
+                                                                   "    pm.expect(response.token).to.not.be.empty;\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "pm.environment.set(\"token\", response.token);"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   },
+                                   {
+                                       "listen":  "prerequest",
+                                       "script":  {
+                                                      "packages":  {
+
+                                                                   },
+                                                      "type":  "text/javascript"
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  " { \r\n \"email\": \"{{newEmail}}\",\r\n \"password\": \"{{newPassword}}\"\r\n }",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/users/login",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "users",
+                                                              "login"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "05 Add Contact",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "type":  "text/javascript",
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.environment.set(\"contactId\", response._id);"
+                                                               ]
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"birthdate\": \"1970-01-01\",\r\n    \"email\": \"john.doe@fake.com\",\r\n    \"phone\": \"8005555555\",\r\n    \"street1\": \"1 Main St.\",\r\n    \"street2\": \"Apartment A\",\r\n    \"city\": \"Anytown\",\r\n    \"stateProvince\": \"KS\",\r\n    \"postalCode\": \"12345\",\r\n    \"country\": \"USA\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/contacts",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "contacts"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "06 Get Contact List",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "type":  "text/javascript",
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Contact list is not empty\", function () {\r\n    pm.expect(response.length).to.be.greaterThan(0);\r\n});"
+                                                               ]
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "GET",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/contacts",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "contacts"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "07 Get Contact",
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "GET",
+                                     "header":  [
+
+                                                ],
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/contacts",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "contacts"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "8 Update Partical Contact",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r",
+                                                                   "    pm.response.to.have.status(200);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "const response = pm.response.json();\r",
+                                                                   "\r",
+                                                                   "pm.test(\"First name is updated\", function () {\r",
+                                                                   "    pm.expect(response.firstName).to.eql(\"UpdatedFirstName\");\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "PATCH",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n  \"firstName\": \"suresh\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/contacts/{{contactId}}",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "contacts",
+                                                              "{{contactId}}"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "9 Update Contact",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "type":  "text/javascript",
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Email is updated\", function () {\r\n    pm.expect(response.email).to.eql(\"amiller@fake.com\");\r\n});"
+                                                               ]
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "PUT",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n    \"firstName\": \"Amy\",\r\n    \"lastName\": \"Miller\",\r\n    \"birthdate\": \"1992-02-02\",\r\n    \"email\": \"amiller@fake.com\",\r\n    \"phone\": \"8005554242\",\r\n    \"street1\": \"13 School St.\",\r\n    \"street2\": \"Apt. 5\",\r\n    \"city\": \"Washington\",\r\n    \"stateProvince\": \"QC\",\r\n    \"postalCode\": \"A1A1A1\",\r\n    \"country\": \"Canada\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/contacts/{{contactId}}",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "contacts",
+                                                              "{{contactId}}"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "10 Logout",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "type":  "text/javascript",
+                                                      "exec":  [
+                                                                   "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+                                                               ]
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "auth":  {
+                                                  "type":  "bearer",
+                                                  "bearer":  [
+                                                                 {
+                                                                     "key":  "token",
+                                                                     "value":  "{{token}}",
+                                                                     "type":  "string"
+                                                                 }
+                                                             ]
+                                              },
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/users/logout",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "users",
+                                                              "logout"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 }
+             ]
 }
